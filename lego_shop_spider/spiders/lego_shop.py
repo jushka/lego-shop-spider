@@ -12,4 +12,19 @@ class LegoShopSpider(scrapy.Spider):
 
   def parse_category(self, response):
     products_urls = response.xpath('//a[contains(@class, "ProductImagestyles__ProductImageLink")]/@href').getall()
-    print(products_urls)
+
+    for url in products_urls:
+      yield response.follow(url=url, callback=self.parse_product)
+
+  def parse_product(self, response):
+    name_elements = response.xpath('//h1[@data-test="product-overview-name"]//text()').getall()
+    name = ''.join(name_elements)
+        
+    product_id = response.xpath('//span[@itemprop="productID"]/text()').get()
+
+    product = {
+      'name': name,
+      'product_id': product_id
+    }
+
+    yield product

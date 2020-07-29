@@ -14,6 +14,8 @@ BOT_NAME = 'lego_shop_spider'
 SPIDER_MODULES = ['lego_shop_spider.spiders']
 NEWSPIDER_MODULE = 'lego_shop_spider.spiders'
 
+FEED_FORMAT = 'csv'
+FEED_URI = 'lego_products.csv'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'lego_shop_spider (+http://www.yourdomain.com)'
