@@ -5,7 +5,7 @@ class LegoShopSpider(scrapy.Spider):
 
   def start_requests(self):
     urls = [
-      'https://www.lego.com/en-lt/themes/star-wars?page=1&sort.key=PRICE&sort.direction=ASC'
+      'https://www.lego.com/en-lt/themes/star-wars'
     ]
     for url in urls:
       yield scrapy.Request(url=url, callback=self.parse_category)
@@ -16,8 +16,12 @@ class LegoShopSpider(scrapy.Spider):
     for url in products_urls:
       yield response.follow(url=url, callback=self.parse_product)
 
+    next_page = response.xpath('//a[contains(@class, "Paginationstyles__NextLink")]/@href').get()
+    if next_page:
+      yield scrapy.Request(url=response.urljoin(next_page), callback=self.parse_category)
+
   def parse_product(self, response):
-    name_elements = response.xpath('//h1[@data-test="product-overview-name"]//text()').getall()
+    name_elements = response.xpath('//h1[@data-test="product-overview-name"]/span//text()').getall()
     name = ''.join(name_elements)
         
     product_id = response.xpath('//span[@itemprop="productID"]/text()').get()
